@@ -1,0 +1,3 @@
+= quarkus-wiremock
+
+Playing around with a WireMock container setup.

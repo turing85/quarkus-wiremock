@@ -1,0 +1,36 @@
+ARG COMPRESSOR_IMAGE="docker.io/alpine:3.18.4@sha256:48d9183eb12a05c99bcc0bf44a003607b8e941e1d4f41f9ad12bdcc4b5672f86"
+ARG DISTROLESS_IMAGE="quay.io/quarkus/quarkus-distroless-image:2.0@sha256:e108423467c2ad65fb873a3077dbee646384e82f590fc1acb7261bc5cfd6ba02"
+
+FROM ${COMPRESSOR_IMAGE} AS compressor
+ARG UPX_INSTALLATION_COMMAND="apk add \
+    libgcc=12.2.1_git20220924-r10 \
+    libstdc++=12.2.1_git20220924-r10 \
+    upx=4.0.2-r0 \
+  && rm -rf /var/cache/apt/*"
+ARG UPX_COMPRESSION_MODE="--fast"
+
+USER root
+WORKDIR /project
+RUN eval "${UPX_INSTALLATION_COMMAND}"
+COPY \
+  --chmod=700 \
+  target/*-runner /project/application
+RUN upx \
+  "${UPX_COMPRESSION_MODE}" \
+  -o application-compressed \
+  application
+
+FROM ${DISTROLESS_IMAGE} as runner
+ARG APP_DIR=/deployment
+ARG UID=1001
+
+USER root
+WORKDIR ${APP_DIR}
+COPY \
+  --from=compressor \
+  --chmod=555 \
+   /project/application-compressed ${APP_DIR}/application
+
+ENV LANGUAGE='en_US:en'
+USER ${UID}:${UID}
+ENTRYPOINT [ "./application" ]
