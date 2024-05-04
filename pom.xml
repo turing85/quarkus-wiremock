@@ -7,6 +7,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <properties>
     <!-- Plugin Versions -->
+    <assembly-plugin.version>3.7.1</assembly-plugin.version>
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <dependency-check-maven.version>8.4.2</dependency-check-maven.version>
     <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
@@ -26,6 +27,7 @@
     <quarkus.platform.version>3.10.0</quarkus.platform.version>
 
     <!-- Project Setup -->
+    <assembly-plugin.skip>false</assembly-plugin.skip>
     <dependency-check-maven.skip>true</dependency-check-maven.skip>
     <dependency-check-maven.formats>html,junit</dependency-check-maven.formats>
     <dependency-check-maven.goal>check</dependency-check-maven.goal>
@@ -147,6 +149,41 @@
                 <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                 <wiremock.verbose>${wiremock.verbose}</wiremock.verbose>
               </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${assembly-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>tar-gz</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <inlineDescriptors>
+                <inlineDescriptor>
+                  <id>tar-gz</id>
+                  <includeBaseDirectory>false</includeBaseDirectory>
+                  <formats>
+                    <format>tar.gz</format>
+                  </formats>
+                  <fileSets>
+                    <fileSet>
+                      <outputDirectory>/</outputDirectory>
+                      <directory>${project.build.directory}/quarkus-app</directory>
+                      <useDefaultExcludes>false</useDefaultExcludes>
+                    </fileSet>
+                  </fileSets>
+                </inlineDescriptor>
+              </inlineDescriptors>
+              <skipAssembly>${assembly-plugin.skip}</skipAssembly>
+              <tarLongFileMode>posix</tarLongFileMode>
             </configuration>
           </execution>
         </executions>
@@ -277,6 +314,7 @@
         </property>
       </activation>
       <properties>
+        <assembly-plugin.skip>true</assembly-plugin.skip>
         <quarkus.container-image.additional-tags>native</quarkus.container-image.additional-tags>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
@@ -289,6 +327,7 @@
         </property>
       </activation>
       <properties>
+        <assembly-plugin.skip>true</assembly-plugin.skip>
         <quarkus.container-image.additional-tags>native</quarkus.container-image.additional-tags>
         <quarkus.docker.dockerfile-native-path>src/main/container/Containerfile.native-distroless-compressed</quarkus.docker.dockerfile-native-path>
         <quarkus.package.type>native</quarkus.package.type>
