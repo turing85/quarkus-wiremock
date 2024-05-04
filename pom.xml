@@ -7,23 +7,23 @@
   <version>1.0.0-SNAPSHOT</version>
   <properties>
     <!-- Plugin Versions -->
-    <compiler-plugin.version>3.11.0</compiler-plugin.version>
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <dependency-check-maven.version>8.4.2</dependency-check-maven.version>
     <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
     <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
-    <surefire-plugin.version>3.2.1</surefire-plugin.version>
+    <surefire-plugin.version>3.2.5</surefire-plugin.version>
 
     <!-- Dependency Versions -->
-    <lombok.version>1.18.30</lombok.version>
+    <lombok.version>1.18.32</lombok.version>
 
     <!-- Test Dependency Versions -->
-    <truth.version>1.1.5</truth.version>
-    <wiremock.version>3.2.0</wiremock.version>
+    <truth.version>1.4.2</truth.version>
+    <wiremock.version>3.5.4</wiremock.version>
 
     <!-- Quarkus Setup -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.2.7.Final</quarkus.platform.version>
+    <quarkus.platform.version>3.10.0</quarkus.platform.version>
 
     <!-- Project Setup -->
     <dependency-check-maven.skip>true</dependency-check-maven.skip>
@@ -33,7 +33,7 @@
     <formatter-maven-plugin.skip>false</formatter-maven-plugin.skip>
     <impsort-maven-plugin.goal>sort</impsort-maven-plugin.goal>
     <impsort-maven-plugin.skip>false</impsort-maven-plugin.skip>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.container-image.additional-tags>jvm</quarkus.container-image.additional-tags>
@@ -69,6 +69,7 @@
         <artifactId>impsort-maven-plugin</artifactId>
         <version>${impsort-maven-plugin.version}</version>
         <configuration>
+          <compliance>17</compliance>
           <groups>java.,javax.,jakarta.,*</groups>
           <lineEnding>LF</lineEnding>
           <removeUnused>true</removeUnused>
@@ -105,6 +106,13 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
           <compilerArgs>
             <arg>-parameters</arg>
           </compilerArgs>
@@ -200,11 +208,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-reactive</artifactId>
+      <artifactId>quarkus-rest-client</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

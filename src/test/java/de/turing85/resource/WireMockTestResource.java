@@ -19,7 +19,7 @@ public class WireMockTestResource
   // @formatter:off
   private static final String CONTAINER_IMAGE = System.getProperty(
       "wiremock.container.image",
-      "docker.io/wiremock/wiremock:3.2.0-3-alpine@sha256:9727ab048396b990a1552c31be652e516ce76b0f8389e80e13c4877c2b690a10");
+      "docker.io/wiremock/wiremock:3.5.4-alpine");
   private static final String CONTAINER_NAME = System.getProperty(
       "wiremock.container.name",
       "wiremock");
@@ -51,7 +51,7 @@ public class WireMockTestResource
     if (Objects.isNull(wireMockContainer)) {
       wireMockContainer = constructContainer();
     }
-    final String localhost = NetUtil.LOCALHOST.getHostName();
+    final String localhost = NetUtil.LOCALHOST4.getHostName();
     if (!wireMockContainer.isRunning()) {
       wireMockContainer.start();
       wireMock = constructWireMock(localhost);
